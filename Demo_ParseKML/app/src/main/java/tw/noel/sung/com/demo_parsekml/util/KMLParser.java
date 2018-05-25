@@ -23,7 +23,6 @@ import java.util.ArrayList;
 public class KMLParser {
     private XmlPullParser xmlPullParser;
     private Context context;
-    private InputStreamReader inputStreamReader;
     private String dataStr;
     private ArrayList<LatLng> pointArrayList;
 
@@ -84,10 +83,14 @@ public class KMLParser {
 
                     String[] pointArray = point.split(",|\\ ");
                     for (int i = 0; i < pointArray.length; i += 3) {
-                        Log.e("b", pointArray[i+1]);
-//                        pointArrayList.add(new LatLng(Double.parseDouble(pointArray[i + 1]), Double.parseDouble(pointArray[i])));
+                        String latStr = pointArray[i + 1];
+                        String lngStr = pointArray[i];
+                        Log.e("lat", latStr);
+                        Log.e("lng", lngStr);
+                        if( !latStr.isEmpty() && !lngStr.isEmpty()){
+                            pointArrayList.add(new LatLng(Double.parseDouble(latStr), Double.parseDouble(lngStr)));
+                        }
                     }
-
                 }
             }
         } catch (IOException e) {

@@ -4,6 +4,7 @@ import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -20,9 +21,7 @@ import tw.noel.sung.com.demo_parsekml.util.KMLParser;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
-    private LatLng latLng;
-    private double targetLat = 25.051662;
-    private double targetLng = 121.549572;
+    private KMLParser kmlParser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,20 +37,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        latLng = new LatLng(targetLat, targetLng);
-        mMap.addMarker(new MarkerOptions().position(latLng).title("Marker in Sydney"));
-        KMLParser kmlParser = new KMLParser(this);
+        kmlParser = new KMLParser(this);
+        drawKMLRoute();
+    }
+    //------------------
+
+    /***
+     *  取出點位置 繪製路線
+     */
+    private void drawKMLRoute() {
         ArrayList<LatLng> points = kmlParser.getPoints("test.kml");
         PolylineOptions polylineOptions = new PolylineOptions();
 
         for (int i = 0; i < points.size(); i++) {
-            Log.e(""+i,points.get(i).latitude+"");
             polylineOptions.add(points.get(i));
         }
-
         mMap.addPolyline(polylineOptions);
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(points.get(0), 16));
     }
-    //------------------
-
-
 }
